@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Built-By: lea
+Build-Jdk: 10.0.2
+Implementation-Title: projetAutorite
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: com.example
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/projetAutorite
+Created-By: Maven Integration for Eclipse
+
