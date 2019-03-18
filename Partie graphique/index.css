@@ -1,3 +1,11 @@
 .main-panel{
-    width: auto!important;
+    width: 100%;
+}
+
+.odometer{
+    font-size: 3vw;
+}
+
+.alert-info{
+    background-color : #808080!important;
 }
