@@ -1,38 +1,89 @@
-/**
- * data pour le main graph : points
- */
+var REFRESH_RATE = 3000; // ms
+var ip_distant = "http://172.17.3.251:8080/";
+var time = []
+var hours = []
+var mainData = [] // top main graph
+var workData = [] // travaux
 
- var time = ["Jour 1", "Jour 2", "Jour 3", "Jour 4", "Jour 5", "Jour 6", "Jour 7", "Jour 8", "Jour 9", "Jour 10"];
- var hours = ["7h", "8h", "9h", "10h", "11h", "12h", "13h", "14h", "15h", "16h","17h","18h","19h","20h"];
- var mainData = [50, 150, 100, 190, 130, 90, 150, 389, 120, 140];
+var actualData = [1];
+var askedData = [1];
+
+hours = ["7h", "8h", "9h", "10h", "11h", "12h", "13h", "14h", "15h", "16h","17h","18h","19h","20h"];
 
 
- /**
-  * Bar Graph : Contrat
-  */
+refreshData();
+setInterval(refreshData, REFRESH_RATE); // Set refresh rate
 
-  var actualData = [10,100,150];
-  var askedData = [50,50,50];
-
-  /**
-   * Travaux
-   */
-  var workData = [542, 480, 430, 550, 530, 453, 380, 434, 568, 610, 700, 630];
-
-  function ChangeData(index)
-{   
-    console.log("passe");
-    if(index==0){
-        lineChart.data.datasets[0].data = [542, 480, 430, 550, 530, 453, 380, 434, 568, 610, 700, 630];
-        lineChart.data.labels = time;
-    }else{
-        lineChart.data.datasets[0].data = [3, 4, 5, 5, 1, 3, 1]
-        lineChart.data.labels = hours;
-
-    }
-    lineChart.update();
+// ========= FUNCTIONS =========
+function updateTitle(data) {
+    $('#displayedData').text(data);
 }
 
+function refreshData() {
+    // REFRESH SCORE
+    $.get(ip_distant + '/score', function (score, status) {
+        $('.odometer').html(score);
+    });
+
+    // Score by day
+    $.get(ip_distant + '/scorejour', function (data, status) {
+        mainData = []
+        time = []
+        data.forEach(function (elem) {
+            mainData.push(elem[0])
+            time.push(elem[1])
+        })
+        mainChart.data.datasets[0].data = mainData;
+        mainChart.data.label = time;
+        mainChart.update();
+    });
+
+    // travaux by day
+    $.get(ip_distant + '/travauxjour', function (data, status) {
+        time = []
+        workData = []
+        data.forEach(function (elem) {
+            workData.push(elem[0])
+            time.push(elem[1])
+        })
+        lineChart.data.datasets[0].data = workData;
+        lineChart.data.labels = time;
+        lineChart.update();
+    });
+
+    // Contrat / avancement du transporteur
+    viewChartData = []
+    viewsChart.data.labels = [0, 1]
+    $.get(ip_distant + '/courses/confirm', function (nbConfirm, status) {
+        viewsChartData.push(nbConfirm)
+    })
+    $.get(ip_distant + '/courses/annule', function (nbAnnule, status) {
+        viewsChartData.push(nbAnnule)
+    })
+    viewsChart.update()
+
+    // Courses / Statistiques des demandes
+    stats = {
+        'date' : [],
+        'courses_dmd' : [],
+        'courses_acp' : [],
+        'courses_ann' : [],
+        'couv_offre' : []
+    }
+
+    $.get(ip_distant + '/coursesday/demand', function (data, status) {
+        data.forEach(function(elem){
+            stats.courses_dmd.push(elem[0])
+            stats.date.push(elem[1])
+        })
+    })
+
+    $.get(ip_distant + '/coursesday/annule', function (data, status) {    })
+    console.log(stats)
+
+
+
+}
   /**
    * Tableau
    */
@@ -74,12 +125,6 @@
   
   
   }
-
-  /**
-   * Points du Transporteur
-   */
-
-  $('.odometer').html(123);
 
   /**
    * Tableau de notifications

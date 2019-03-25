@@ -1,4 +1,7 @@
 var lineChart = null;
+var mainChart = null;
+var barChart = null;
+var viewChart = null;
 
 data  = {
   
@@ -122,7 +125,7 @@ data  = {
     gradientFill.addColorStop(0, "rgba(128, 182, 244, 0)");
     gradientFill.addColorStop(1, "rgba(255, 255, 255, 0.24)");
 
-    var myChart = new Chart(ctx, {
+    mainChart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: time,
@@ -261,7 +264,7 @@ data  = {
     gradientFill2.addColorStop(0, "rgba(237,157,144, 0)");
     gradientFill2.addColorStop(1, '#ea8c7d');
 
-    var a = {
+    var barChart = {
       type: "bar",
       data: {
         labels: time,
@@ -341,6 +344,6 @@ data  = {
       }
     };
 
-    var viewsChart = new Chart(e, a);
+    viewsChart = new Chart(e, barChart);
   }
 };
